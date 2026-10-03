@@ -42,23 +42,33 @@ description: 将单个长对话、多个相关 AI 对话或项目记录整理为
 
 读取 [references/graph-format.md](references/graph-format.md)，写 `evolution.json`。它是可迁移的事实记录；渲染器不读取聊天，也不替模型提炼事件。
 
-默认交付可点击的 HTML 页面；SVG 作为可选导出，不能用静态图预览代替可用的节点详情与文件操作。用户指出连线交叉或希望 Archify 式交互时，优先采用 [交互图与附件工作流](references/interactive.md)：用已安装 Archify 检查正交连线，再打包节点证据与文件快照。不能把 `file://` 链接作为获取产物的唯一方式。
+默认交付完整的交互附件 HTML，并按 [交互图与附件工作流](references/interactive.md) 使用另行安装的 Archify 检查连线、生成框图并打包节点证据和文件快照。首次打开只显示框图；点击节点或使用“定位阶段”才打开阅读面板。切换主题时保留当前图／阅读模式及已打开图状态。没有 Archify 时，说明缺少的依赖；只有在完整流程无法运行时才用 `render.py` 生成基础查看器，并明确它不等同于完整附件版。不能把 `file://` 链接作为获取产物的唯一方式。
 
 默认交付到用户指定目录，或当前工作目录下的 `outputs/chat-archify/`（遵守宿主输出约定）：
 
-- 交互 HTML：点击节点弹出资源链接、变化、原因和证据；支持搜索、缩放、主题切换。Archify 方式把允许读取的产物快照嵌入页面，文件名直接可点击，另提供预览、下载和原始路径复制。
+- 交互 HTML：初始只显示框图；点击节点／键盘激活节点或使用“定位阶段”打开阅读面板。桌面并排显示框图与可关闭侧栏，窄屏只显示框图或单阅读面板。阅读位置通过面包屑和浏览器前进／返回恢复；切换主题保留模式和框图状态。统一搜索覆盖阶段、文件正文和已保存对话摘录，显示类型与命中上下文；文件命中直达正文行，对话命中正文高亮。Markdown 默认渲染并保留原文及目录，多个行号定位作用于排版和原文。文件关联依据证据／产物数据计算；进入路径单独标明，不冒称来源关系。对话索引按已记录的同任务、同轮次分组，并提供同来源邻接摘录；清楚说明收录范围。只有来源记录包含已验证 HTTPS `original_url` 时才提供原任务入口，否则提供标题和任务 ID 供人工查找。展示已有 artifact.note；阶段时间与文件快照时间分别标注，未知时间显示未记录，不推断日期。技术 ID 默认收起。
 - `evolution.html`：没有 Archify 时的轻量后备查看器。其本地链接受浏览器限制，交付时明确说明，不把复制路径等同于可直接下载。
 - `evolution.svg`：矢量框图，与 HTML 放在同目录时可点击跳转到节点详情。
 - `evolution.json`：稳定 ID 的结构化记录，供增量更新。
 - `evolution.md`：可读的事件、来源及链接索引，无脚本也可阅读。
 
-执行（`<skill-dir>` 为本 skill 目录）：
+默认完整附件版：先按 [交互图与附件工作流](references/interactive.md) 准备来源、workflow、通过检查的 Archify viewer 和 manifest；然后打包（`<skill-dir>` 为本 skill 目录）：
+
+```text
+python "<skill-dir>/scripts/package_interactive.py" "<output-dir>/manifest.json" "<output-dir>/chat-archify.html"
+```
+
+随包虚构示例可用 `scripts/build_interactive_demo.py --archify-dir "<archify-skill-dir>" --out-dir "<output-dir>"` 一键重现；这只构建演示，不会替代对真实来源的提炼。基础渲染器仅依赖 Python 3.9+ 标准库；完整默认流程还需要 Node.js 18+ 和单独安装的 Archify。完整附件 HTML 无 CDN 或联网请求。
+
+明确降级到基础查看器时才执行：
 
 ```text
 python "<skill-dir>/scripts/render.py" "<output-dir>/evolution.json" --out-dir "<output-dir>"
 ```
 
-仅依赖 Python 3 标准库，HTML 无 CDN、外部字体或联网请求。标题保持简洁，长内容放详情。默认中文界面，可按用户需求调整模板文案。超过约 30 个重要节点时，合并琐碎事件或生成总览与独立子图并互相链接，不静默丢弃事件。没有 Python 时保留 JSON/Markdown，直接生成带来源说明的 Mermaid 图作为降级交付，说明未生成交互 HTML。
+该基础命令不生成 Archify 框图、完整文件阅读面板、跨类型全文搜索或对话轮次索引；不能描述为与完整附件版相同。缺少完整流程依赖时说明差异及缺失项。
+
+标题保持简洁，长内容放详情。默认中文界面，可按用户需求调整模板文案。超过约 30 个重要节点时，合并琐碎事件或生成总览与独立子图并互相链接，不静默丢弃事件。没有 Python 时保留 JSON/Markdown，直接生成带来源说明的 Mermaid 图作为降级交付，说明未生成交互 HTML。
 
 ## 更新与验收
 

@@ -18,15 +18,67 @@ dialog{padding:0;border:1px solid var(--line);border-radius:12px;background:var(
 
 /* Node resources stay visible in the top layer at every viewport width. */
 .workspace{grid-template-columns:minmax(0,1fr);max-width:1800px}#node-dialog{width:min(760px,94vw);max-height:88vh;overflow:auto}#node-dialog .detail-header{padding:12px 20px}#node-dialog .detail-header h2{display:none}.resource-link{display:block;font-weight:650;font-size:15px;text-decoration:underline;overflow-wrap:anywhere}.resource-link:hover{background:var(--soft)}#node-dialog .section:first-of-type{background:var(--soft)}
+
+.markdown-body{max-width:82ch;margin:0 auto;line-height:1.8;font-size:15px;overflow-wrap:anywhere}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4{line-height:1.4;margin:1.3em 0 .6em;scroll-margin-top:100px}.markdown-body h1{font-size:27px}.markdown-body h2{font-size:23px;border-bottom:1px solid var(--line);padding-bottom:.3em}.markdown-body h3{font-size:19px}.markdown-body p{margin:.7em 0}.markdown-body ul,.markdown-body ol{padding-left:1.8em}.markdown-body li>p{margin:.25em 0}.markdown-body code{font:13px/1.6 ui-monospace,Consolas,monospace;background:var(--paper);padding:2px 5px;border-radius:4px}.markdown-body pre{max-height:none;padding:14px;background:var(--paper);white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);border-radius:8px}.markdown-body pre code{padding:0;background:none}.markdown-body blockquote{margin:1em 0;padding:4px 16px;border-left:3px solid var(--accent);color:var(--muted);background:var(--soft)}.markdown-body img{max-width:100%;height:auto}.md-table{overflow-x:auto;margin:1em 0}.markdown-body table{border-collapse:collapse;width:100%;font-size:14px}.markdown-body th,.markdown-body td{padding:8px 11px;border:1px solid var(--line);text-align:left}.markdown-body th{background:var(--soft)}.markdown-body hr{border:0;border-top:1px solid var(--line);margin:1.5em 0}.technical-details{margin:12px 20px;padding:10px 0;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.technical-details summary{cursor:pointer;min-height:32px}.technical-details p{overflow-wrap:anywhere}.technical-details .path{padding:10px 0;border:0}.file-outline{padding:6px 20px 14px}.file-outline select{width:100%}.conversation-context{margin:12px 20px;padding:14px 16px;background:var(--soft);border:1px solid var(--line);border-radius:8px}.conversation-context h3{margin:0 0 7px;font-size:14px}.conversation-context p{margin:4px 0}.conversation-context .button{margin-top:7px}.conversation-controls{display:flex;gap:9px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line)}.conversation-controls select{max-width:330px;flex:1;min-width:180px}.conversation-controls input{flex:1;min-width:180px}.conversation-grid{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:360px}#conversation-list{max-height:65vh;overflow:auto;border-right:1px solid var(--line)}.conversation-result{display:block;width:100%;text-align:left;padding:13px 16px;background:var(--panel);color:var(--ink);border:0;border-bottom:1px solid var(--line)}.conversation-result span{display:block;font-size:12px;color:var(--muted);margin-top:5px}.conversation-result:hover,.conversation-result[aria-pressed="true"]{background:var(--soft)}#conversation-content{padding:16px 22px;overflow:auto;max-height:65vh;min-width:0}#conversation-content>h3{margin:0 0 8px}#conversation-content .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}#conversation-content .technical-details{margin:18px 0 0}#file-dialog .modal-head .tools{flex-shrink:0}
+@media(max-width:780px){.conversation-grid{grid-template-columns:1fr}#conversation-list{max-height:24vh;border-right:0;border-bottom:1px solid var(--line)}#conversation-content{max-height:48vh;padding:14px}.conversation-controls{padding:10px}.markdown-body{font-size:14px}.markdown-body h1{font-size:23px}.markdown-body h2{font-size:20px}#file-dialog .modal-head{flex-wrap:wrap}#file-dialog .modal-head .tools{width:100%}.conversation-context{margin:10px 12px}}
+/* One persistent reader panel keeps the diagram and reading context in a single layer. */
+.workspace{grid-template-columns:minmax(0,1fr) minmax(340px,440px);max-width:2100px;height:calc(100dvh - 154px);min-height:520px;align-items:stretch}
+.workspace.show-graph{grid-template-columns:minmax(0,1fr)}
+.graph-panel{display:flex;flex-direction:column;min-height:0;margin:0}
+.graph-host{position:relative;flex:1;min-height:0}
+.graph-host iframe{position:absolute;inset:0;width:100%;height:100%;min-height:0}
+.graph-host iframe[hidden]{display:none}
+.graph-foot{align-items:center;flex-wrap:wrap}
+.reader-panel{height:100%;max-height:none;min-height:0;position:sticky;top:16px;overflow:hidden;display:flex;flex-direction:column}
+.reader-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--panel)}
+.reader-bar .history-controls{display:flex;gap:6px}
+.reader-bar .button{min-height:34px;padding:5px 9px}
+.breadcrumbs{display:flex;gap:5px;align-items:center;flex:1;min-width:160px;overflow:auto;white-space:nowrap;color:var(--muted);font-size:12px}
+.breadcrumb{border:0;background:none;color:var(--accent);padding:3px 2px;text-decoration:underline;text-underline-offset:3px}
+.reader-heading{margin:0;padding:15px 18px 10px;font-size:17px;line-height:1.4;border-bottom:1px solid var(--line)}
+#reader-content{min-height:0;flex:1;overflow:auto;overscroll-behavior:contain;padding:0 0 14px;scrollbar-gutter:stable}
+.reader-actions{display:flex;gap:7px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--line)}
+.reader-actions .button{font-size:12px;min-height:32px}
+.reader-section{padding:14px 18px;border-bottom:1px solid var(--line)}
+.reader-section h3{font-size:12px;color:var(--muted);margin:0 0 8px}
+.reader-section p{margin:0 0 8px;overflow-wrap:anywhere}
+.reader-node-title{font-size:19px;line-height:1.35;margin:5px 0 8px}
+.reader-node-time{color:var(--muted);font-size:12px}
+.result-type{display:inline-block;margin-right:7px;padding:1px 6px;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:10px}
+.match-context{display:block;margin-top:4px;color:var(--muted);font-size:12px;font-weight:400;line-height:1.45}
+.reading-links{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.resource-line{padding:7px 0;border-top:1px solid var(--line)}
+.source-line{display:block;white-space:pre-wrap;overflow-wrap:anywhere;padding:0 8px 0 3.5em;position:relative;scroll-margin:35vh}
+.source-line::before{content:attr(data-line);position:absolute;left:0;width:2.8em;text-align:right;color:var(--muted);user-select:none}
+.locator-target{background:#ffd76a99;box-shadow:inset 3px 0 #d89000}
+.markdown-body [data-source-start],.source-line{scroll-margin-block:35vh}
+.locator-help{padding:8px 11px;margin:8px 0;background:var(--soft);border-radius:6px;color:var(--muted);font-size:12px}
+.conversation-turn{padding:11px;margin:10px 0;border:1px solid var(--line);border-radius:8px}
+.conversation-turn[aria-current="true"]{border-color:var(--accent);background:var(--soft)}
+.conversation-turn h4{margin:0 0 6px;font-size:13px}
+.conversation-turn p{margin:4px 0}
+.conversation-turn article{margin-top:8px}
+.search{width:min(350px,38vw)}
+.search .results{position:fixed;top:78px;right:18px;width:min(520px,calc(100vw - 36px));max-height:min(65vh,620px)}
+.results .result{max-height:110px;overflow:hidden}
+.results .result strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.coverage{margin:0 16px 18px}
+.conversation-grid{grid-template-columns:minmax(0,1fr)}
+#conversation-list{max-height:220px;border-right:0;border-bottom:1px solid var(--line)}
+#conversation-content{max-height:none;overflow:visible;padding:14px 18px}
+.search-group-heading{margin:0;padding:7px 12px;background:var(--soft);font-size:12px;color:var(--muted)}
+.search-results-group{border-bottom:1px solid var(--line)}
+.raw-source{font:12px/1.65 ui-monospace,Consolas,monospace;overflow:auto}
+@media(max-width:900px){.workspace{grid-template-columns:minmax(0,1fr) minmax(300px,390px)}.top{gap:12px;padding:14px}.tools{gap:6px}.search{width:min(260px,35vw)}.workspace{height:calc(100dvh - 150px)}}
+@media(max-width:780px){.top{display:flex;flex-direction:column;align-items:stretch}.top .tools{margin-top:8px}.search{flex:1;width:auto;min-width:150px}.workspace{display:block;height:auto;min-height:0;padding:10px}.workspace:not(.show-graph) .graph-panel{display:none}.workspace.show-graph .reader-panel{display:none}.graph-panel{height:calc(100dvh - 170px);min-height:480px;margin:0}.reader-panel{height:calc(100dvh - 175px);position:static;max-height:none}.graph-host{min-height:380px}iframe{height:100%;min-height:0}.graph-foot{font-size:10px}.reader-heading{padding:13px 14px}.reader-section{padding:13px 15px}.search .results{top:118px;left:12px;right:12px;width:auto}#conversation-list{max-height:24vh;border-right:0;border-bottom:1px solid var(--line)}.conversation-controls{padding:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-<header class="top"><div><div class="eyebrow">CHAT ARCHIFY / INTERACTIVE</div><h1>@@TITLE@@</h1><p>点击任意节点 → 弹出相关资源 → 点击文件名打开，或预览、下载。</p></div><div class="tools"><div class="search"><label class="sr" for="search">搜索事件和产物</label><input id="search" type="search" placeholder="搜索事件、决策或文件" autocomplete="off"><div class="results" id="results" hidden></div></div><button class="button" id="wide">查看所选资源</button><button class="button" id="about">阅读说明</button></div></header>
+<header class="top"><div><div class="eyebrow">CHAT ARCHIFY / INTERACTIVE</div><h1>@@TITLE@@</h1><p>桌面可并排查看图与资料；窄屏在图和阅读面板间切换。</p></div><div class="tools"><div class="search"><label class="sr" for="search">搜索阶段、文件和对话摘录</label><input id="search" type="search" placeholder="搜索阶段、文件或对话摘录" autocomplete="off"><div class="results" id="results" hidden></div></div><button class="button" id="history-back" aria-label="返回上一阅读位置" title="返回">← 返回</button><button class="button" id="history-forward" aria-label="前往下一阅读位置" title="前进">前进 →</button><button class="button" id="wide">打开阅读面板</button><button class="button" id="conversation-open">对话索引</button><button class="button" id="about">阅读说明</button></div></header>
 <nav id="chapters" role="tablist" aria-label="演进主题"></nav>
-<main class="workspace"><section class="graph-panel" aria-label="可交互演进图"><div class="graph-tools"><label for="node-picker">定位阶段<select id="node-picker"></select></label><span class="hint" id="graph-count"></span></div><iframe id="viewer" title="Archify 项目演进交互图" sandbox="allow-scripts allow-same-origin allow-downloads" referrerpolicy="no-referrer"></iframe><div class="graph-foot"><span>拖动／缩放 · 点击节点打开资源弹窗</span><button class="link-button" id="native-download">下载此主题框图（不含附件）</button></div><div class="notice" id="viewer-note" hidden>图内联动暂不可用，可通过“定位阶段”查看全部节点与附件。</div></section></main>
+<main class="workspace show-graph" id="workspace"><section class="graph-panel" aria-label="可交互演进图"><div class="graph-tools"><label for="node-picker">定位阶段<select id="node-picker"></select></label><span class="hint" id="graph-count"></span></div><div class="graph-host" id="viewer-host"></div><div class="graph-foot"><span>拖动／缩放 · 点击节点查看对应资料</span><button class="link-button" id="native-download">下载此主题框图（不含附件）</button></div><div class="notice" id="viewer-note" hidden>图内联动暂不可用，可通过“定位阶段”查看全部节点与附件。</div></section><aside class="reader-panel" id="reader-panel" aria-label="阅读面板" hidden><div class="reader-bar"><div class="history-controls"><button class="button" id="reader-back" aria-label="返回上一阅读位置" title="返回">←</button><button class="button" id="reader-forward" aria-label="前往下一阅读位置" title="前进">→</button></div><div class="breadcrumbs" id="breadcrumbs" aria-label="当前位置"></div><button class="button" id="reader-graph">查看图</button><button class="button" id="reader-close" aria-label="关闭阅读面板">×</button></div><h2 class="reader-heading" id="reader-title" tabindex="-1">选择一个阶段开始阅读</h2><div class="reader-actions" id="reader-actions"></div><div id="reader-content" tabindex="0"></div></aside></main>
 <details class="coverage" id="coverage"><summary>来源覆盖与验证边界</summary><div id="coverage-body"></div></details>
-<dialog id="node-dialog" aria-labelledby="node-title"><div class="modal-head"><h2 id="node-title"></h2><button class="button close" id="node-close" aria-label="关闭节点资源">×</button></div><div id="detail" aria-label="节点资源与详情"></div></dialog>
-<dialog id="file-dialog" aria-labelledby="file-title"><div class="modal-head"><div><h2 id="file-title"></h2><div class="meta" id="file-meta"></div></div><div class="tools"><button class="button primary" id="file-download">下载文件</button><button class="button close" id="file-close" aria-label="关闭预览">×</button></div></div><div class="modal-sub" id="file-note"></div><div class="preview" id="file-preview"></div><div class="path"><code id="file-path"></code><button class="button" id="copy-path">复制原始路径</button></div></dialog>
 <div class="sr" id="announce" role="status" aria-live="polite"></div>
 <noscript><p>请在支持 JavaScript 的浏览器中打开此文件，以查看交互框图和内置附件。</p></noscript>
 <script type="application/json" id="explorer-data">@@PAYLOAD@@</script>

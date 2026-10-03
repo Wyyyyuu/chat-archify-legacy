@@ -6,9 +6,9 @@ Turn long conversations into interactive maps of topics, decisions, and changes 
 
 Use Chat Archify for a single conversation or a project discussed across several chats. No code repository or file attachments are required. **It runs only when you explicitly ask.**
 
-[Quick start](#quick-start) · [Try the example](#try-the-example) · [Viewer options](#viewer-options) · [Limitations](#limitations-and-data-handling)
+[Quick start](#quick-start) · [Reproduce the complete viewer](#reproduce-the-complete-viewer) · [Viewer options](#viewer-options) · [Limitations](#limitations-and-data-handling)
 
-Chat Archify is an independent project, not an official Archify extension. Archify is an optional integration for its diagram viewer.
+Chat Archify is an independent project, not an official Archify extension. The complete default viewer uses Archify as a separately installed dependency; a lighter renderer is available as an explicit fallback.
 
 ## What you can trace
 
@@ -60,40 +60,45 @@ Preserve old nodes and branches, add new decisions, and identify unresolved ques
 
 Provide a transcript export when the host cannot access the conversation. The skill cannot retrieve unavailable history on its own.
 
-## Try the example
+## Reproduce the complete viewer
 
-The [sample conversation](examples/reading-plan/conversation.md) is a fictional four-message discussion about a reading habit. Its [structured record](examples/reading-plan/evolution.json) has four nodes and no artifact attachments.
+The self-contained [fictional example](examples/interactive-demo/) includes a six-message conversation excerpt, five stages with a branch and merge, and two linked Markdown snapshots. It contains no real user or project data.
 
-With Python available, run this command from the skill directory. It does not require Archify or an AI host:
+The complete build requires Python 3.9+, Node.js 18+, and Archify installed separately. Find its installed skill directory by locating `archify/SKILL.md` in your configured skills directory or installed skills list; use the parent directory containing `bin/archify.mjs`. The integration is verified with Archify `2.17.0-dev.1`; recheck the workflow and node interaction when using another version. Archify is not bundled or installed by this script ([upstream](https://github.com/tt-a1i/archify)).
+
+Run one command from the skill directory (quote paths that contain spaces):
 
 ```sh
-python scripts/render.py examples/reading-plan/evolution.json --out-dir outputs/demo
+python scripts/build_interactive_demo.py --archify-dir "<archify-skill-directory>" --out-dir "work/portable-skill-demo"
 ```
 
-Open `outputs/demo/evolution.html`. The same command also produces SVG, Markdown, and a copy of the JSON record. Python 3.12 has been tested; the scripts use only its standard library.
+Open `work/portable-skill-demo/chat-archify-demo.html`. The command copies the sample inputs, runs Archify showcase validation and delivery, checks all routes and record/viewer topology, packages the offline viewer, and runs portable Python and Node smoke tests. No dependencies are installed, no network is used, and no server is started. The navigation smoke test uses a fake DOM; it is not real-browser or visual acceptance evidence.
 
-This demonstrates rendering an already prepared record. The AI extracts events and evidence from conversations; the scripts do not parse chat history or infer its meaning.
+This demonstrates how to build a viewer from prepared sources. The AI extracts events and evidence from conversations; the scripts do not parse chat history or infer its meaning. See the [interactive workflow](references/interactive.md) for creating a real record and its sources.
 
 ## Viewer options
 
-| | Basic viewer | Interactive attachment viewer |
+| | Complete interactive attachment viewer | Basic fallback viewer |
 | --- | --- | --- |
-| Setup | Included Python renderer | Separately available Archify, then the included packager |
-| Nodes | Details, sources, and resource references | Resource dialog, details, and sources |
-| Files | Links to original resources; local links may be restricted | Embedded snapshots with clickable names, preview, download, and original-path copying |
-| Diagram | Lightweight graph with SVG export | Archify pan/zoom and diagram controls |
-| Best for | A quick map without Archify | Exploring diagrams alongside their files |
+| Setup | Python 3.9+, Node.js 18+, separately installed Archify | Included Python renderer |
+| Nodes | Diagram-first, then a persistent reading panel beside the diagram | Details, sources, and resource references |
+| Files | Embedded snapshots with clickable names, preview, download, and original-path copying | Resource links; local links may be restricted |
+| Diagram | Archify pan/zoom and diagram controls | Lightweight graph with SVG export |
+| Best for | Default exploration alongside saved files and excerpts | Explicit dependency-limited fallback |
 
-**Archify is optional and is not bundled.** The current integration was built against Archify 2.17; upgrades require checking node interactions again. The HTML viewer needs a browser that supports JavaScript, SVG, Dialog, and Blob APIs.
+Archify is external and is not bundled. The integration was tested with Archify 2.17.0-dev.1. The HTML viewer needs a browser that supports JavaScript, SVG, and Blob APIs; it does not require the Dialog API.
 
-For the attachment viewer, prepare checked Archify HTML files and a manifest using the [integration guide](references/interactive.md), then run:
+The complete viewer opens on the diagram alone, including on desktop. Clicking or keyboard-activating a node opens its reading panel; chapter changes preserve graph-only mode. Desktop shows the diagram beside a closable panel, while narrow screens show either the diagram or one reader. Breadcrumbs and browser back/forward restore the reading route and scroll position, and each chapter keeps its graph state. Markdown includes a formatted view, outline, raw-text toggle, download, and multiline locators. One search covers stages, file contents, and saved excerpts. File associations come from recorded artifact/evidence data; the path used to enter a file is labeled separately. The conversation index groups excerpts by recorded task and turn, shows same-source neighbors, and labels missing context. An original task opens only when the source provides an explicitly verified HTTPS `original_url`; otherwise the viewer shows the saved excerpt and offers title and task ID for manual lookup. Original file paths and technical IDs are collapsed by default.
+
+Markdown tokenization uses the bundled Marked 17.0.5 library ([MIT license](assets/vendor/marked-LICENSE.md)); it needs no CDN or runtime installation. Tokens are rendered as controlled DOM elements. Embedded HTML is displayed as text, and remote images are not loaded automatically.
+
+For a real project, prepare the evidence-based record, checked Archify HTML, and manifest using the [interactive workflow](references/interactive.md). The packager embeds selected snapshots into one offline HTML. If you lack Archify or Node.js, use the basic renderer only as a clearly labeled fallback:
 
 ```sh
-python scripts/check_routes.py outputs/my-map/archify-overview.html
-python scripts/package_interactive.py outputs/my-map/manifest.json outputs/my-map/chat-archify.html
+python scripts/render.py "<output-dir>/evolution.json" --out-dir "<output-dir>"
 ```
 
-These commands require the diagram and manifest to exist first. The packager checks every pair of connectors, including connectors that share a node. It stops on crossings, overlaps, or routes through nodes. Fix the diagram before packaging; the checker validates orthogonal `M/L` paths and reports unsupported geometry.
+The fallback produces `evolution.html`, SVG, Markdown, and a JSON copy. It does not provide the Archify diagram, embedded-file reader, unified full-text search, or turn-grouped excerpt index. The packager for the complete viewer checks every pair of connectors, node IDs, and directed edge multiplicities. It stops on crossings, overlaps, missing relationships, or routes through nodes; fix the diagram without dropping real edges.
 
 ## Records and updates
 

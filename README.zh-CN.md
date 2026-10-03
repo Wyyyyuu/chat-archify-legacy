@@ -6,9 +6,9 @@
 
 适用于单个普通长对话，也适用于跨多个聊天窗口的项目回顾。不需要代码仓库，没有附件也能使用。**只有你明确要求时才生成。**
 
-[快速开始](#快速开始) · [试跑示例](#试跑示例) · [选择查看器](#选择查看器) · [使用边界](#使用边界与数据处理)
+[快速开始](#快速开始) · [重现完整查看器](#重现完整查看器) · [选择查看器](#选择查看器) · [使用边界](#使用边界与数据处理)
 
-Chat Archify 是独立项目，并非 Archify 官方扩展；Archify 仅作为可选的图形查看器集成。
+Chat Archify 是独立项目，并非 Archify 官方扩展。默认完整查看器需另行安装 Archify；基础渲染器仅作为明确的降级选项。
 
 ## 可以追溯什么
 
@@ -60,40 +60,45 @@ Chat Archify 是独立项目，并非 Archify 官方扩展；Archify 仅作为�
 
 宿主无法读取对话时，请提供聊天导出。Skill 本身不能取得不可访问的历史记录。
 
-## 试跑示例
+## 重现完整查看器
 
-仓库中的[示例对话](examples/reading-plan/conversation.md)是四条关于阅读习惯的虚构消息。[对应记录](examples/reading-plan/evolution.json)包含四个节点，没有产物附件。
+自包含的[虚构示例](examples/interactive-demo/)包含六条对话摘录、含分支和合并的五个阶段，以及两份相互链接的 Markdown 快照，不含真实用户或项目数据。
 
-准备好 Python 后，在 Skill 目录执行以下命令，无需 Archify 或 AI 宿主：
+完整生成需要 Python 3.9+、Node.js 18+ 和单独安装的 Archify。在配置的 skills 目录或已安装技能列表中找到 `archify/SKILL.md`，并把包含 `bin/archify.mjs` 的父目录传给脚本。当前集成仅在 Archify `2.17.0-dev.1` 上验证；其他版本需重新检查工作流与节点联动。Archify 不随本目录打包，也不会由脚本安装（[上游项目](https://github.com/tt-a1i/archify)）。
+
+在 Skill 目录执行一条命令（路径含空格时加引号）：
 
 ```sh
-python scripts/render.py examples/reading-plan/evolution.json --out-dir outputs/demo
+python scripts/build_interactive_demo.py --archify-dir "<archify-skill-directory>" --out-dir "work/portable-skill-demo"
 ```
 
-打开 `outputs/demo/evolution.html` 查看。同一命令也会生成 SVG、Markdown 和 JSON 副本。已在 Python 3.12 验证，脚本仅使用标准库。
+打开 `work/portable-skill-demo/chat-archify-demo.html`。命令会复制示例输入，运行 Archify showcase 验证与生成、全部连线和记录／框图拓扑检查、离线附件打包，以及 Python 和 Node 可移植 smoke test。它不会安装依赖、联网或启动服务。导航测试使用 fake DOM，不代表真实浏览器或视觉验收。
 
-这个示例演示如何渲染已经整理好的记录。对话中的事件和证据由 AI 提炼，脚本不会自行读取聊天或理解其含义。
+这个示例演示如何从已有来源构建查看器。对话事件和证据由 AI 提炼，脚本不会自行读取聊天或推断含义。整理真实材料的方法见[交互工作流](references/interactive.md)。
 
 ## 选择查看器
 
-| | 基础查看器 | 交互附件查看器 |
+| | 完整交互附件查看器 | 基础降级查看器 |
 | --- | --- | --- |
-| 准备方式 | 内置 Python 渲染器 | 另行准备 Archify，再使用内置打包器 |
-| 节点内容 | 详情、来源和资源引用 | 资源弹窗、详情和来源 |
-| 文件操作 | 链接到原始资源；本地链接可能受限 | 内嵌快照，文件名可点击，支持预览、下载和复制原始路径 |
-| 框图操作 | 轻量框图与 SVG 导出 | Archify 的拖动、缩放与图形控制 |
-| 适用场景 | 不使用 Archify，快速查看脉络 | 对照框图浏览各阶段文件 |
+| 准备方式 | Python 3.9+、Node.js 18+、另行安装 Archify | 内置 Python 渲染器 |
+| 节点内容 | 默认先显示框图，点击后打开阅读面板 | 详情、来源和资源引用 |
+| 文件操作 | 内嵌快照，支持阅读、下载和复制原始路径 | 资源链接；本地链接可能受限 |
+| 框图操作 | Archify 拖动、缩放和图形控制 | 轻量框图与 SVG 导出 |
+| 适用场景 | 默认完整浏览对话、文件和证据 | 明确缺少完整流程依赖时降级 |
 
-**Archify 是可选依赖，不包含在本目录中。** 当前集成基于 Archify 2.17，升级后需重新检查节点联动。HTML 查看器需要支持 JavaScript、SVG、Dialog 和 Blob 的浏览器。
+Archify 是独立依赖，不包含在本目录中。当前集成基于 Archify 2.17.0-dev.1。HTML 查看器需要支持 JavaScript、SVG 和 Blob 的浏览器，不依赖 Dialog API。
 
-使用交互附件版时，先按[集成说明](references/interactive.md)准备检查通过的 Archify HTML 和 manifest，再执行：
+完整查看器首次打开只显示框图；点击或键盘激活节点才显示阅读面板，切换主题时继续保持图模式。桌面并排显示框图和可关闭侧栏；窄屏一次显示框图或一个阅读面板。面包屑与浏览器前进／返回恢复路线和滚动位置，每个主题保留框图状态。Markdown 支持排版、目录、原文切换、下载和多段行定位；统一搜索覆盖阶段、文件正文和已保存摘录。文件关联按真实产物与证据计算，“从……进入”单独标注导航来源。对话按已记录的任务与轮次分组并显示同来源邻接摘录，说明缺失上下文。只有来源数据提供且显式标记已验证的 HTTPS `original_url` 才显示原任务入口；否则提供标题和任务 ID 供人工查找。原始路径和技术 ID 默认收起。
+
+Markdown 解析使用随包提供的 Marked 17.0.5（[MIT 许可证](assets/vendor/marked-LICENSE.md)），无需 CDN 或运行时安装。解析结果通过受控 DOM 元素渲染，内嵌 HTML 作为文本显示，不会自动加载远程图片。
+
+整理真实项目时，按[交互工作流](references/interactive.md)准备证据记录、检查通过的 Archify HTML 和 manifest，并打包为单个离线页面。缺少 Archify 或 Node.js 时，基础渲染器仅作为清楚标注的降级方案：
 
 ```sh
-python scripts/check_routes.py outputs/my-map/archify-overview.html
-python scripts/package_interactive.py outputs/my-map/manifest.json outputs/my-map/chat-archify.html
+python scripts/render.py "<output-dir>/evolution.json" --out-dir "<output-dir>"
 ```
 
-这些命令要求图形和 manifest 已存在。打包器逐对检查所有连线，包括共享节点的连线；发现交叉、重合或穿框时会中止，需要先修正图形。检查器支持正交 `M/L` 路径，不支持的几何形式会明确报错。
+该降级命令生成 `evolution.html`、SVG、Markdown 和 JSON，不包含 Archify 框图、文件嵌入阅读、跨类型全文搜索或轮次索引。完整附件打包器检查所有连线、节点 ID 和有向边端点及重复数；交叉、重合、缺边或连线穿框时会停止，应修正布局但保留事实关系。
 
 ## 记录与增量更新
 

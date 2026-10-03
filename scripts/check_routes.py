@@ -49,7 +49,10 @@ class DiagramParser(HTMLParser):
             if node and node not in self.nodes:
                 self.nodes[node] = tuple(float(a[k]) for k in ("x", "y", "width", "height"))
         if tag == "path" and "data-edge-from" in a:
-            self.edges.append({"id": a["data-edge-id"], "from": a["data-edge-from"],
+            edge_id = a.get("data-edge-id") or a.get("data-edge-key")
+            if not edge_id:
+                raise ValueError("Archify route is missing both data-edge-id and data-edge-key")
+            self.edges.append({"id": edge_id, "from": a["data-edge-from"],
                                "to": a["data-edge-to"], "points": parse_path(a["d"])})
 
     def handle_endtag(self, tag):
@@ -108,8 +111,8 @@ def audit_file(path, overrides=None):
     parser = DiagramParser()
     parser.feed(path.read_text(encoding="utf-8"))
     edges, nodes = parser.edges, parser.nodes
-    if not edges or not nodes:
-        raise ValueError(f"No Archify route/node geometry found: {path}")
+    if not nodes:
+        raise ValueError(f"No Archify node geometry found: {path}")
     edge_ids = {e["id"] for e in edges}
     for edge_id in (overrides or {}):
         if edge_id not in edge_ids:

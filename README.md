@@ -1,3 +1,5 @@
+> **Historical repository.** The current full skill is [Wyyyyuu/chat-archify](https://github.com/Wyyyyuu/chat-archify). Install `chat-archify.zip` and invoke `$chat-archify`. This repository preserves the earlier implementation.
+
 # Chat Archify
 
 **English** | [简体中文](README.zh-CN.md)

@@ -1,3 +1,5 @@
+> **历史仓库。** 当前完整版本请前往 [Wyyyyuu/chat-archify](https://github.com/Wyyyyuu/chat-archify)，下载 `chat-archify.zip`，使用 `$chat-archify` 调用。此仓库仅保留早期实现。
+
 # Chat Archify · 对话脉络图
 
 [English](README.md) | **简体中文**
